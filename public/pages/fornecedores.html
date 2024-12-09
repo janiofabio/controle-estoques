@@ -1,0 +1,39 @@
+<h2>Fornecedores</h2>
+<form id="fornecedoresForm">
+    <input type="text" id="razaoSocial" placeholder="Razão Social/Nome" required>
+    <input type="text" id="cpfCnpj" placeholder="CPF/CNPJ" required>
+    <button type="submit">Salvar</button>
+    <button type="button" onclick="loadPage('login')">Sair</button>
+</form>
+<script>
+    function initFornecedores() {
+        const form = document.getElementById('fornecedoresForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const razao_social = document.getElementById('razaoSocial').value;
+            const cpf_cnpj = document.getElementById('cpfCnpj').value;
+
+            try {
+                const response = await fetch('/api/fornecedores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token'),
+                    },
+                    body: JSON.stringify({ razao_social, cpf_cnpj }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    form.reset();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao cadastrar fornecedor: ' + error.message);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,43 @@
+<h2>Produtos</h2>
+<form id="produtosForm">
+    <input type="text" id="codigo" placeholder="Código" required>
+    <input type="text" id="descricao" placeholder="Descrição" required>
+    <input type="text" id="tipo" placeholder="Tipo" required>
+    <input type="number" id="valorEstimado" placeholder="Valor estimado" step="0.01" required>
+    <button type="submit">Salvar</button>
+    <button type="button" onclick="loadPage('login')">Sair</button>
+</form>
+<script>
+    function initProdutos() {
+        const form = document.getElementById('produtosForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const codigo = document.getElementById('codigo').value;
+            const descricao = document.getElementById('descricao').value;
+            const tipo = document.getElementById('tipo').value;
+            const valor_estimado = document.getElementById('valorEstimado').value;
+
+            try {
+                const response = await fetch('/api/produtos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token'),
+                    },
+                    body: JSON.stringify({ codigo, descricao, tipo, valor_estimado }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    form.reset();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao cadastrar produto: ' + error.message);
+            }
+        });
+    }
+</script>

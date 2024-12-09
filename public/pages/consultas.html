@@ -1,0 +1,74 @@
+<h2>Consultas</h2>
+<form id="consultasForm">
+    <select id="tipoConsulta" required>
+        <option value="">Selecione o tipo de consulta</option>
+        <option value="produtos">Por Produto</option>
+        <option value="fornecedores">Por Fornecedores</option>
+        <option value="movimentacoes">Movimentações</option>
+    </select>
+    <div id="periodoContainer" style="display: none;">
+        <input type="date" id="dataInicio" required>
+        <input type="date" id="dataFim" required>
+    </div>
+    <button type="submit">Consultar</button>
+    <button type="button" onclick="loadPage('login')">Sair</button>
+</form>
+<div id="resultadoConsulta"></div>
+<script>
+    function initConsultas() {
+        const form = document.getElementById('consultasForm');
+        const tipoConsulta = document.getElementById('tipoConsulta');
+        const periodoContainer = document.getElementById('periodoContainer');
+        const resultadoConsulta = document.getElementById('resultadoConsulta');
+
+        tipoConsulta.addEventListener('change', () => {
+            periodoContainer.style.display = tipoConsulta.value === 'movimentacoes' ? 'block' : 'none';
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tipo = tipoConsulta.value;
+            let url = `/api/consultas/${tipo}`;
+
+            if (tipo === 'movimentacoes') {
+                const dataInicio = document.getElementById('dataInicio').value;
+                const dataFim = document.getElementById('dataFim').value;
+                url += `?data_inicio=${dataInicio}&data_fim=${dataFim}`;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                    },
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultadoConsulta.innerHTML = '';
+                    if (data.length === 0) {
+                        resultadoConsulta.innerHTML = '<p>Nenhum resultado encontrado.</p>';
+                    } else {
+                        const table = document.createElement('table');
+                        table.innerHTML = `
+                            <thead>
+                                <tr>${Object.keys(data[0]).map(key => `<th>${key}</th>`).join('')}</tr>
+                            </thead>
+                            <tbody>
+                                ${data.map(item => `
+                                    <tr>${Object.values(item).map(value => `<td>${value}</td>`).join('')}</tr>
+                                `).join('')}
+                            </tbody>
+                        `;
+                        resultadoConsulta.appendChild(table);
+                    }
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao realizar consulta: ' + error.message);
+            }
+        });
+    }
+</script>

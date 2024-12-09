@@ -1,0 +1,16 @@
+Comandos usados
+
+Instala o node
+npm install
+npm init -y
+
+Instala o express
+npm install express-session
+
+Instala o bcrypt a sessao express e o cors no mysql .env
+npm install mysql2 bcrypt dotenv
+npm install express mysql2 cors bcrypt express-session dotenv
+npm install express mysql2 cors bcrypt jsonwebtoken dotenv
+
+Conecta com o mysql, porta 3000 para o sistema
+node server.js

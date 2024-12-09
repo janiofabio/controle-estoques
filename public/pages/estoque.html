@@ -1,0 +1,68 @@
+<h2>Estoque</h2>
+<form id="estoqueForm">
+    <select id="local" required>
+        <option value="">Selecione o local</option>
+        <option value="Principal">Principal</option>
+        <option value="Secundário">Secundário</option>
+        <option value="Outros">Outros</option>
+    </select>
+    <select id="produto" required>
+        <option value="">Selecione o produto</option>
+    </select>
+    <input type="number" id="quantidade" placeholder="Quantidade" required>
+    <button type="submit">Salvar</button>
+    <button type="button" onclick="loadPage('login')">Sair</button>
+</form>
+<script>
+    async function initEstoque() {
+        const form = document.getElementById('estoqueForm');
+        const produtoSelect = document.getElementById('produto');
+
+        // Carregar lista de produtos
+        try {
+            const response = await fetch('/api/consultas/produtos', {
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                },
+            });
+            const produtos = await response.json();
+            produtos.forEach(produto => {
+                const option = document.createElement('option');
+                option.value = produto.id;
+                option.textContent = `${produto.codigo} - ${produto.descricao}`;
+                produtoSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar produtos:', error);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const local = document.getElementById('local').value;
+            const produto_id = document.getElementById('produto').value;
+            const quantidade = document.getElementById('quantidade').value;
+
+            try {
+                const response = await fetch('/api/estoque', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token'),
+                    },
+                    body: JSON.stringify({ local, produto_id, quantidade }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    form.reset();
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao atualizar estoque: ' + error.message);
+            }
+        });
+    }
+</script>

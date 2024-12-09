@@ -1,0 +1,45 @@
+<h2>Cadastro de Usuário</h2>
+<form id="cadastroForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="senha" placeholder="Senha" required>
+    <input type="password" id="confirmaSenha" placeholder="Confirma senha" required>
+    <button type="submit">Salvar</button>
+    <button type="button" onclick="loadPage('login')">Sair</button>
+</form>
+<script>
+    function initCadastro() {
+        const form = document.getElementById('cadastroForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const confirmaSenha = document.getElementById('confirmaSenha').value;
+
+            if (senha !== confirmaSenha) {
+                alert('As senhas não coincidem');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/usuarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, senha }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                    loadPage('login');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                alert('Erro ao cadastrar usuário: ' + error.message);
+            }
+        });
+    }
+</script>

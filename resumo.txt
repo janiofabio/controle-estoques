@@ -1,0 +1,38 @@
+Protótipo controle de estoques
+
+Tela 1 – Cadastro usuário Campos: Email Senha Confirma senha Botões: Salvar Sair
+
+Tela 2 – logon Email Senha Botões: Entrar Sair
+
+Tela 3 – Fornecedores Razão Social/Nome CPF/CNPJ Botões: Salvar Sair
+
+Tela 4 – Produtos Código Descrição Tipo Valor estimado Botões: Salvar Sair
+
+Tela 4 – Estoque Local (Lista Principal / Secundário / Outros) Lista Mostrando (Código + Descrição do produto) Quantidade Botões: Salvar Sair
+
+Tela 5 – Movimentações Local (Lista Principal / Secundário / Outros) Lista Mostrando (Código + Descrição do produto) Tipo (Entrada ou Saida) Quantidade Gerar um log da transação Botões: Salvar Sair
+
+Tela6 – Consultas Por Produto Por fornecedores Movimentações (informando o período)
+
+esquema
+
+CONTROLE-ESTOQUES/
+├── node_modules/
+├── public/
+│   ├── css/
+│   │   └── styles.css
+│   ├── js/
+│   │   └── app.js
+│   ├── pages/
+│   │   ├── cadastro.html
+│   │   ├── consultas.html
+│   │   ├── estoque.html
+│   │   ├── fornecedores.html
+│   │   ├── login.html
+│   │   ├── movimentacoes.html
+│   │   └── produtos.html
+│   └── index.html
+├── .env
+├── package-lock.json
+├── package.json
+└── server.js
